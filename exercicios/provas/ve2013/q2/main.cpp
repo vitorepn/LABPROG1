@@ -1,11 +1,19 @@
-//Questão incompleta, não consegui pensar em uma forma boa de fazer ela
-
 #include <iostream>
-#include "jogo.h"
+#include "conjunto.h"
 
 using namespace std;
-
 int main(){
-    Jogo jogo;
-    jogo.imprimir();
+    Conjunto c1(5);
+    Conjunto c2(8);
+
+    c1.inserir(3);
+    c1.inserir(2);
+    c1.inserir(5);
+
+    c2.inserir(5);
+    c2.inserir(7);
+
+
+    c1.diferenca(c2).imprimir();
+
 }
