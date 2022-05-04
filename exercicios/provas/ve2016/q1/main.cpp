@@ -13,13 +13,13 @@ int main(){
     ClientePreferencial cp2("Ana",2,4);
     ClientePreferencial cp3("Jorge",3,5);
 
-    b.adicionar(cc1);
     b.adicionar(cc2);
     b.adicionar(cc3);
-    b.adicionar(cp1);
+    b.adicionar(cc1);
     b.adicionar(cp2);
     b.adicionar(cp3);
-
+    b.adicionar(cp1);
+    
     st = b.simular();
     cout<<st.tempoMedio<<" "<<st.desistentes<<endl;
 }

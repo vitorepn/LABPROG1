@@ -7,7 +7,8 @@ class Cliente{
     string nome;
     int chegada;
     int duracao;
-    Cliente(string nome, int chegada, int duracao):nome(nome),chegada(chegada),duracao(duracao){}
+    bool saiuDaFila;
+    Cliente(string nome, int chegada, int duracao):nome(nome),chegada(chegada),duracao(duracao),saiuDaFila(0){}
 };
 
 class ClienteComum:public Cliente{
@@ -55,27 +56,93 @@ class Banco{
         if(qtdComum + qtdPreferencial >= tamanho){return;}
         filaPreferencial[qtdPreferencial++] = cliente;
     }
+
+    void ordernarFilas(){
+        int aux;
+        for(int i = 0;i<qtdComum;i++){
+            for(int j = 0; j<qtdComum;j++){
+                if(filaComum[j].chegada>filaComum[j+1].chegada){
+                    aux = filaComum[j].chegada;
+                    filaComum[j].chegada = filaComum[j+1].chegada;
+                    filaComum[j+1].chegada = aux;
+                }
+            }
+        }
+        for(int i = 0;i<qtdPreferencial;i++){
+            for(int j = 0; j<qtdPreferencial-1;j++){
+                if(filaPreferencial[j].chegada>filaPreferencial[j+1].chegada){
+                    aux = filaPreferencial[j].chegada;
+                    filaPreferencial[j].chegada = filaPreferencial[j+1].chegada;
+                    filaPreferencial[j+1].chegada = aux;
+                }
+            }
+        }
+    }
+
     stats simular(){
-        int tempo = 1;
+        int tempo = 0;
         int desistentes = 0;
         int contador = 0;
         float tMedio=0;
-        for(int i = 0;i<qtdComum;i++){
-            while(i<qtdComum){
-                if(tempo > (this->filaComum[i].chegada+this->filaComum[i].tempoMaximo)){
-                cout<<"O cliente "<<this->filaComum[i].nome<< " desistiu"<<endl;
-                i++;
-                desistentes++;
-                }else{break;}
+        int tChegada = 0;
+        int atendimento = 0;
+
+        while(contador!=3){
+            cout<<"Tempo: "<<tempo<<endl;
+            contador = 0;
+            for(int i = 0;i<qtdComum;i++){
+
+                if(filaComum[i].saiuDaFila){
+                contador++;
+                continue;
+                }
+                if(filaComum[i].duracao+atendimento == tempo && filaComum[i].chegada == tChegada){
+                    cout<<"O cliente "<<filaComum[i].nome<<" terminou de ser atendido"<<endl;
+                    filaComum[i].saiuDaFila = 1;
+                    atendimento = 0;
+                    continue; 
+                }
+
+                if(filaComum[i].chegada+filaComum[i].tempoMaximo <= tempo && filaComum[i].chegada!=tChegada){
+                    cout<<"O cliente "<<filaComum[i].nome<<" saiu da fila"<<endl;
+                    filaComum[i].saiuDaFila=1;
+                    desistentes++;
+                    continue;
+                }
+
+                if(tempo < filaComum[i].chegada){
+                    continue;
+                }
+
+                if(atendimento){
+                    continue;
+                }
+
+                cout<<"O cliente "<<filaComum[i].nome<<" foi atendido"<<endl;
+                atendimento = tempo;
+                tChegada = filaComum[i].chegada;
+                tMedio += this->filaComum[i].duracao;
             }
-            if(i>=qtdComum){break;}
-            cout<<"No tempo "<<tempo<<" "<<this->filaComum[i].nome<<" foi atendido"<<endl;
-            for(int j = 0;j<this->filaComum[i].duracao;j++){
-                tempo++;
-            }
-            tMedio += this->filaComum[i].duracao;
-            cout<<"No tempo: "<<tempo<<" "<<this->filaComum[i].nome<<" terminou o atendimento"<<endl;
+            tempo++;
         }
+
+
+        // for(int i = 0;i<qtdComum;i++){
+        //     while(i<qtdComum){
+        //         if(tempo > (this->filaComum[i].chegada+this->filaComum[i].tempoMaximo)){
+        //         cout<<"O cliente "<<this->filaComum[i].nome<< " desistiu"<<endl;
+        //         i++;
+        //         desistentes++;
+        //         }else{break;}
+        //     }
+        //     if(i>=qtdComum){break;}
+        //     cout<<"No tempo "<<tempo<<" "<<this->filaComum[i].nome<<" foi atendido"<<endl;
+        //     for(int j = 0;j<this->filaComum[i].duracao;j++){
+        //         tempo++;
+        //     }
+        //     tMedio += this->filaComum[i].duracao;
+        //     cout<<"No tempo: "<<tempo<<" "<<this->filaComum[i].nome<<" terminou o atendimento"<<endl;
+        // }
 
         for(int i = 0; i<qtdPreferencial;i++){
             tMedio += this->filaPreferencial[i].duracao;
