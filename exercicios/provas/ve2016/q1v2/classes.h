@@ -1,6 +1,9 @@
 #include <iostream>
-
+#include<algorithm>
 using namespace std;
+
+
+
 
 class Cliente{
     public:
@@ -9,6 +12,8 @@ class Cliente{
     int duracao;
     bool saiuDaFila;
     Cliente(string nome, int chegada, int duracao):nome(nome),chegada(chegada),duracao(duracao),saiuDaFila(0){}
+    
+
 };
 
 class ClienteComum:public Cliente{
@@ -17,6 +22,9 @@ class ClienteComum:public Cliente{
     ClienteComum(string nome, int chegada, int duracao, int tempoMaximo)
     :Cliente(nome,chegada,duracao),tempoMaximo(tempoMaximo){}
     ClienteComum():Cliente("null",0,0){}
+    
+
+
 };
 
 class ClientePreferencial:public Cliente{
@@ -26,6 +34,11 @@ class ClientePreferencial:public Cliente{
     ClientePreferencial():Cliente("null",0,0){}
         
 };
+
+
+    bool operator< (ClienteComum const c1, ClienteComum const c2){
+        return c1.chegada<c2.chegada;
+    };
 
 class stats{
     public:
@@ -58,20 +71,12 @@ class Banco{
     }
 
     void ordernarFilas(){
-        ClienteComum aux;
-        for(int i = 0;i<qtdComum;i++){
-            for(int j = 0; j<qtdComum-1;j++){
-                if(filaComum[j].chegada>filaComum[j+1].chegada){
-                    aux = filaComum[j];
-                    filaComum[j] = filaComum[j+1];
-                    filaComum[j+1] = aux;
-                }
-            }
-        }
+
+        sort(filaComum[0],filaComum[6]);
     }
 
     stats simular(){
-        int tempo = 1;
+        int tempo = 0;
         int desistentes = 0;
         int contador = 0;
         float tMedio=0;
@@ -102,3 +107,4 @@ class Banco{
         return stats((tMedio)/(qtdComum+qtdPreferencial-desistentes),desistentes);
     }
 };
+
