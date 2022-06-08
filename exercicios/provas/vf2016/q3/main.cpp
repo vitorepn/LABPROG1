@@ -40,6 +40,6 @@ int main(){
     gravar(vetor1,"saida.txt");
     carregar(vetor2,"saida.txt");
     auto it{vetor2.end()};
-    cout<<it->idade;
+    cout<<vetor2.size();
 
 }
